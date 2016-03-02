@@ -95,9 +95,7 @@ class NSDPSniffer():
 
                         print("protocol: " + chr(data[10]) + chr(data[11]) + 
                                 chr(data[12]) + chr(data[13]))
-                        
-                        dev_offset = 20
-                        dev_len = unpack('!H', data[dev_offset:dev_offset+2])[0]
+                        dev_len = unpack('!H', data[20:22])[0]
                         real_desc = ''
                         for i in range(dev_len):
                             real_desc += chr(data[22+i])

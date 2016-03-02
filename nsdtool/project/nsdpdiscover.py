@@ -23,7 +23,7 @@
 
 import socket
 import sys
-import fcntl
+#import fcntl
 import struct 
 
 import network
@@ -64,6 +64,8 @@ class NSDPDiscover():
             packet = ip_header + udp_header + discover_data
             
             s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, True)
+            if sys.platform == 'win32':
+                s.setsockopt(socket.IPPROTO_IP,socket.IP_HDRINCL,1)
             s.sendto(packet, (self.network.dest_ip , 0 ))
 
             sleep(self.delay)

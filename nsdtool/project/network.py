@@ -23,8 +23,8 @@
 
 import socket
 import sys
-import fcntl
 import struct
+import configreader
 
 from struct import *
 
@@ -41,6 +41,10 @@ class Network():
         self.dest_ip = dest_ip
 
     def get_ip_address(self, ifname):
+        if sys.platform == 'win32':
+            config = configreader.ConfigReader().read()
+            return config['NSDP']['Interface']
+        import fcntl
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         try:

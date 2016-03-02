@@ -23,7 +23,8 @@
 
 import socket
 import sys
-import fcntl
+if sys.platform != 'win32':
+    import fcntl
 import struct 
 import binascii
 import threading
