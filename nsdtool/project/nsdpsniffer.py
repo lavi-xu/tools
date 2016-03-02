@@ -95,21 +95,29 @@ class NSDPSniffer():
 
                         print("protocol: " + chr(data[10]) + chr(data[11]) + 
                                 chr(data[12]) + chr(data[13]))
-                        print("device: " + chr(data[22]) + chr(data[23]) + 
-                                chr(data[24]) + chr(data[25]) + chr(data[26]) + 
-                                chr(data[27]) + chr(data[28]) + chr(data[29]))
+                        
+                        dev_offset = 20
+                        dev_len = unpack('!H', data[dev_offset:dev_offset+2])[0]
+                        real_desc = ''
+                        for i in range(dev_len):
+                            real_desc += chr(data[22+i])
+                        print("device: " + real_desc)
                         print("mac: " + self.eth_addr(data[0:6]))
-                        print("firmware version: " + chr(data[104]) + 
-                                chr(data[105]) + chr(data[106]) + 
-                                chr(data[107]) + chr(data[108]) + 
-                                chr(data[109]) + chr(data[110]) + 
-                                chr(data[111]))
-                        print("default gateway: " + str(data[74]) + "." + 
-                                str(data[75]) + "." + str(data[76]) + "." + 
-                                str(data[77]))
-                        print("switch ip: " + str(data[58]) + "." + 
-                                str(data[59]) + "." + str(data[60]) + "." + 
-                                str(data[61]))
-                        print("subnet mask: " + str(data[66]) + "." + 
-                                str(data[67]) + "." + str(data[68]) + "." + 
-                                str(data[69]))
+
+                        fw_offset = dev_len+82
+                        fw_len = unpack('!H', data[fw_offset:fw_offset+2])[0]
+                        real_desc = ''
+                        for i in range(fw_len):
+                            real_desc += chr(data[fw_offset+2+i])
+                        print("firmware version: " + real_desc)
+                        
+                        ips_offset = dev_len+50
+                        print("default gateway: " + str(data[ips_offset+16]) + "." + 
+                                str(data[ips_offset+17]) + "." + str(data[ips_offset+18]) + "." + 
+                                str(data[ips_offset+19]))
+                        print("switch ip: " + str(data[ips_offset]) + "." + 
+                                str(data[ips_offset+1]) + "." + str(data[ips_offset+2]) + "." + 
+                                str(data[ips_offset+3]))
+                        print("subnet mask: " + str(data[ips_offset+8]) + "." + 
+                                str(data[ips_offset+9]) + "." + str(data[ips_offset+10]) + "." + 
+                                str(data[ips_offset+11]))
