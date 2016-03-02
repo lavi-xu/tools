@@ -92,6 +92,10 @@ class NSDP(object):
         if args['quiet'] == True:
             self.quiet = True
 
+    def sniff(self):
+        sniffer = nsdpsniffer.NSDPSniffer(self.dest_port)
+        sniffer.start_sniffer()
+
     def start(self):
 
         if not hasattr(self, "mode"):
@@ -99,9 +103,12 @@ class NSDP(object):
             sys.exit(0)
 
         if self.mode == 'sniffer':
-            sniffer = nsdpsniffer.NSDPSniffer(self.dest_port)
-            sniffer.start_sniffer()
+            self.sniff ()
         elif self.mode == 'discover':
+            import threading, time
+            t_sniff = threading.Thread(target=self.sniff)
+            t_sniff.start()
+            time.sleep(1)
             if self.fd is not None:
                 discover = nsdpdiscover.NSDPDiscover(self.network, self.fd, None, self.delay, self.quiet)
             else:
